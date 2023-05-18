@@ -1,0 +1,73 @@
+#### -------- INSERT CODE HERE ----------
+
+import numpy as np
+
+# Set the dimensions of the grid
+grid_width = 50
+grid_height = 50
+
+# Create an empty grid
+grid = np.zeros((grid_height, grid_width))
+
+# create the starting environment (gosper gun already running and spaceship).
+starting_env = [(1, 5), (2, 5), (1, 6), (2, 6), 
+                (11, 5), (11, 6), (11, 7), (12, 4), (13, 3), (14, 3),
+                (12, 8), (13, 9), (14, 9), (15, 6), (16, 4), (16, 8),
+                (17, 5), (17, 6), (17, 7), (18, 6),
+                (21, 3), (21, 4), (21, 5), (22, 3), (22, 4), (22, 5),
+                (23, 2), (23, 6), (25, 2), (25, 1), (25, 6), (25, 7),
+                (34, 3), (34, 4), (35, 3), (35, 4),
+                (24, 10), (25, 11), (26, 11), (25, 12), (24, 12),
+                (31, 18), (33, 18), (32, 19), (33, 19), (32, 20),
+                (39, 25), (40, 26), (41, 26), (39, 27), (40, 27),
+                (46, 33), (48, 33), (47, 34), (48, 34), (47, 35),
+                (27,34), (30,34), (31,35), (27,36), (31,36), (28,37), (29,37), (30,37), (31,37)]
+# Defines these co-ordinates as alive cells
+for cell in starting_env:
+    grid[cell[1], cell[0]] = 1
+# Imports graph visualising library    
+import matplotlib.pyplot as plt
+
+# Set the number of generations to run to 50
+num_generations = 50
+
+# Set up the subplots a for each generation
+fig, axs = plt.subplots(num_generations, figsize=(400, 400))
+
+# Loop through each generation
+for i in range(num_generations):
+    # Plot the current grid on the corresponding subplot
+    axs[i].imshow(grid, cmap='gray')
+    
+    # Copy the grid to use for the next generation
+    next_grid = np.copy(grid)
+    
+    # Loop through each cell in the grid
+    for y in range(grid_height):
+        for x in range(grid_width):
+            # Count the number of live neighbors
+            num_live_neighbors = 0
+            for j in range(-1, 2):
+                for k in range(-1, 2):
+                    if j == 0 and k == 0:
+                        continue
+                    if x+j < 0 or x+j >= grid_width or y+k < 0 or y+k >= grid_height:
+                        continue
+                    if grid[y+k, x+j] == 1:
+                        num_live_neighbors += 1
+            
+            # Applying the rules of life
+            if grid[y, x] == 1 and num_live_neighbors < 2:
+                next_grid[y, x] = 0
+            elif grid[y, x] == 1 and num_live_neighbors > 3:
+                next_grid[y, x] = 0
+            elif grid[y, x] == 0 and num_live_neighbors == 3:
+                next_grid[y, x] = 1
+    
+    # Update the grid for the next generation
+    grid = next_grid
+
+# Show the plot
+plt.show()
+
+#### ------------------------------------
